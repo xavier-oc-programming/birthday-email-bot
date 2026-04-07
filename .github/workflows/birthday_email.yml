@@ -1,0 +1,28 @@
+name: Birthday Email
+
+on:
+  schedule:
+    - cron: "0 8 * * *"   # every day at 08:00 UTC
+  workflow_dispatch:        # allow manual runs from the Actions tab
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run birthday emailer
+        env:
+          BIRTHDAY_SENDER_EMAIL: ${{ secrets.BIRTHDAY_SENDER_EMAIL }}
+          BIRTHDAY_APP_PASSWORD: ${{ secrets.BIRTHDAY_APP_PASSWORD }}
+        run: python advanced/main.py
